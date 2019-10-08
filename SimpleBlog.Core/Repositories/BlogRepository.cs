@@ -64,5 +64,56 @@ namespace SimpleBlog.Core.Repositories
         {
             return db.Categories.Where(c => c.UrlSlug.Equals(categorySlug)).FirstOrDefault();
         }
+
+        public IList<Post> PostsForTag(string tagSlug, int pageNumber, int pageSize)
+        {
+            var posts = db.Posts.Where(p => p.IsPublished && p.Tags.Any(t => t.UrlSlug.Equals(tagSlug)))
+                                .OrderByDescending(p => p.PublishedOn)
+                                .Skip(pageNumber * pageSize)
+                                .Take(pageSize)
+                                .Include(p => p.Category)
+                                .ToList();
+
+            var postIds = posts.Select(p => p.Id).ToList();
+
+            return db.Posts.Where(p => postIds.Contains(p.Id))
+                           .OrderByDescending(p => p.PublishedOn)
+                           .Include(p => p.Tags)
+                           .ToList();
+        }
+
+        public int PostsCountForTag(string tagSlug)
+        {
+            return db.Tags.Where(t => t.UrlSlug.Equals(tagSlug)).SelectMany(p => p.Posts).Count();
+        }
+
+        public Tag GetTag(string tagSlug)
+        {
+            return db.Tags.Where(t => t.UrlSlug.Equals(tagSlug)).FirstOrDefault();
+        }
+
+        public IList<Post> PostsForSearch(string search, int pageNumber, int pageSize)
+        {
+            var posts = db.Posts.Where(p => p.IsPublished && (p.Title.Contains(search) || p.Category.Name.Equals(search) || p.Tags.Any(t => t.Name.Equals(search))))
+                    .OrderByDescending(p => p.PublishedOn)
+                    .Skip(pageNumber * pageSize)
+                    .Take(pageSize)
+                    .Include(p => p.Category)
+                    .ToList();
+
+            var postIds = posts.Select(p => p.Id).ToList();
+
+            return db.Posts.Where(p => postIds.Contains(p.Id))
+                           .OrderByDescending(p => p.PublishedOn)
+                           .Include(p => p.Tags)
+                           .ToList();
+        }
+
+        public int PostsCountForSearch(string search)
+        {
+            return (from p in db.Posts
+                    where p.IsPublished == true && (p.Title.Contains(search) || p.Category.Name.Equals(search) || p.Tags.Any(t => t.Name.Equals(search)))
+                    select p).Count();
+        }
     }
 }
