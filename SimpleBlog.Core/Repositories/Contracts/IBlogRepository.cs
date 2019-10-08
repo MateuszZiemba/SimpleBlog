@@ -19,5 +19,8 @@ namespace SimpleBlog.Core.Repositories.Contracts
         Tag GetTag(string tagSlug);
         IList<Post> PostsForSearch(string search, int pageNumber, int pageSize);
         int PostsCountForSearch(string search);
+        Post GetPost(int year, int month, string postSlug);
+        IList<Category> GetAllCategories();
+        IList<Tag> GetAllTags();
     }
 }

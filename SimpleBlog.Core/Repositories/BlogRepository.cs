@@ -115,5 +115,23 @@ namespace SimpleBlog.Core.Repositories
                     where p.IsPublished == true && (p.Title.Contains(search) || p.Category.Name.Equals(search) || p.Tags.Any(t => t.Name.Equals(search)))
                     select p).Count();
         }
+
+        public Post GetPost(int year, int month, string postSlug)
+        {
+            return db.Posts.Where(p => p.UrlSlug.Equals(postSlug) 
+                               && p.PublishedOn.Year.Equals(year) 
+                               && p.PublishedOn.Month.Equals(month))
+                               .Include(c => c.Category)
+                               .FirstOrDefault();
+        }
+        public IList<Category> GetAllCategories()
+        {
+            return db.Categories.OrderBy(c => c.Name).ToList();
+        }
+
+        public IList<Tag> GetAllTags()
+        {
+            return db.Tags.OrderBy(t => t.Name).ToList();
+        }
     }
 }

@@ -49,7 +49,7 @@ namespace SimpleBlog.Controllers
             return View("List", listViewModel);
         }
 
-        public ViewResult Search(string s, int p = 1)
+        public ViewResult Search(string s, int p = 1) //todo app.js not working
         {
             string type = "Search";
             var listViewModel = new ListViewModel(blogRepository, type, s, p);
@@ -57,5 +57,24 @@ namespace SimpleBlog.Controllers
             ViewBag.Title = String.Concat("List of posts found for ", s);
             return View("List", listViewModel);
         }
+
+        public ViewResult Post(int year, int month, string title)
+        {
+            var post = blogRepository.GetPost(year, month, title);
+            if (post == null)
+                throw new HttpException(404, "Post not found");
+
+            if (post.IsPublished == false && User.Identity.IsAuthenticated == false)
+                throw new HttpException(401, "The post is not published");
+            return View(post);
+        }
+
+        [ChildActionOnly]
+        public PartialViewResult Sidebars()
+        {
+            var widgetViewModel = new WidgetViewModel(blogRepository);
+            return PartialView("_Sidebars", widgetViewModel);
+        }
+
     }
 }

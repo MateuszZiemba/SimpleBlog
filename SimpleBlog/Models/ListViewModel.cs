@@ -9,16 +9,19 @@ namespace SimpleBlog.Models
 {
     public class ListViewModel
     {
-        private int PageSize 
-        {
-            get { return 10; }
-        }
+        private int PageSize { get { return 10; } }
+        public IList<Post> Posts { get; private set; }
+        public int TotalPosts { get; private set; }
+        public Category Category { get; private set; }
+        public Tag Tag { get; private set; }
+        public string Search { get; private set; }
 
         public ListViewModel(IBlogRepository blogRepository, int pageNumber)
         {
             Posts = blogRepository.Posts(pageNumber - 1, PageSize);
             TotalPosts = blogRepository.PostsCount();
         }
+
         public ListViewModel(IBlogRepository blogRepository, string type, string text, int pageNumber)
         {
             switch (type)
@@ -42,11 +45,5 @@ namespace SimpleBlog.Models
                     break;
             }
         }
-
-        public IList<Post> Posts { get; private set; }
-        public int TotalPosts { get; private set; }
-        public Category Category { get; private set; }
-        public Tag Tag { get; private set; }
-        public string Search { get; private set; }
     }
 }
