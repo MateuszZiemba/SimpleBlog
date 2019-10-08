@@ -26,5 +26,15 @@ namespace SimpleBlog.Controllers
             ViewBag.Title = "Latest Posts";
             return View("List", listViewModel);
         }
+
+        public ViewResult Category(string category, int p = 1)
+        {
+            var listViewModel = new ListViewModel(blogRepository, category, p);
+            if (listViewModel.Category == null)
+                throw new HttpException(404, "Category not found!");
+            
+            ViewBag.Title = String.Concat("Latest Posts from category ", listViewModel.Category.Name);
+            return View("List", listViewModel);
+        }
     }
 }

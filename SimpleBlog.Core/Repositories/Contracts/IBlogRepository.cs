@@ -11,5 +11,8 @@ namespace SimpleBlog.Core.Repositories.Contracts
     {
         IList<Post> Posts(int pageNumber, int pageSize);
         int PostsCount();
+        IList<Post> PostsForCategory(string categorySlug, int pageNumber, int pageSize);
+        int PostsCountForCategory(string categorySlug);
+        Category GetCategory(string categorySlug);
     }
 }
