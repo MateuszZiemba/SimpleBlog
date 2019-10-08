@@ -76,5 +76,14 @@ namespace SimpleBlog.Controllers
             return PartialView("_Sidebars", widgetViewModel);
         }
 
+        public ViewResult About()
+        {
+            return View();
+        }
+
+        public ViewResult Contact()
+        {
+            return View();
+        }
     }
 }
